@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src https://bedrock-runtime.us-east-1.amazonaws.com https://bedrock-runtime.us-east-2.amazonaws.com https://bedrock-runtime.us-west-2.amazonaws.com https://bedrock-runtime.eu-west-1.amazonaws.com https://bedrock-runtime.eu-central-1.amazonaws.com https://bedrock-runtime.ap-northeast-1.amazonaws.com https://bedrock-runtime.ap-southeast-2.amazonaws.com; img-src data:; font-src 'self'">  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta name="referrer" content="no-referrer">
+  <title>Bedrock ChatBot</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iNDBweCIgaGVpZ2h0PSI0MHB4IiB2aWV3Qm94PSIwIDAgNDAgNDAiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8dGl0bGU+SWNvbi1BcmNoaXRlY3R1cmUvMzIvQXJjaF9BbWF6b24tQmVkcm9ja18zMjwvdGl0bGU+CiAgICA8ZyBpZD0iSWNvbi1BcmNoaXRlY3R1cmUvMzIvQXJjaF9BbWF6b24tQmVkcm9ja18zMiIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0iZXZlbm9kZCI+CiAgICAgICAgPGcgaWQ9Ikljb24tQXJjaGl0ZWN0dXJlLUJHLzMyL01hY2hpbmUtTGVhcm5pbmciIGZpbGw9IiMwMUE4OEQiPgogICAgICAgICAgICA8cmVjdCBpZD0iUmVjdGFuZ2xlIiB4PSIwIiB5PSIwIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiPjwvcmVjdD4KICAgICAgICA8L2c+CiAgICAgICAgPGcgaWQ9Ikljb24tU2VydmljZS8zMi9BbWF6b24tQmVkcm9ja18zMiIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoNi4wMDAwMDAsIDYuMDAwMDAwKSIgZmlsbD0iI0ZGRkZGRiI+CiAgICAgICAgICAgIDxwYXRoIGQ9Ik0xMC41MTYsMjYuOTMzMjExNiBMOC4yOTMsMjUuNjYzMjExNiBMMTEuNzI0LDIzLjk0NzIxMTYgTDExLjI3NywyMy4wNTMyMTE2IEw3LjI3NywyNS4wNTMyMTE2IEw3LjI5NywyNS4wOTQyMTE2IEw0LDIzLjIxMDIxMTYgTDQsMTkuODA5MjExNiBMNy43MjQsMTcuOTQ3MjExNiBMNy4yNzcsMTcuMDUzMjExNiBMMy41MzYsMTguOTIzMjExNiBMMSwxNy4yMzIyMTE2IEwxLDE0LjgwOTIxMTYgTDQuNzI0LDEyLjk0NzIxMTYgTDQuMjc3LDEyLjA1MzIxMTYgTDEsMTMuNjkxMjExNiBMMSwxMC43NjcyMTE2IEwzLjUyMyw5LjA4NjIxMTU4IEw3LDExLjAzODIxMTYgTDcsMTQuMTkxMjExNiBMNS4yNzcsMTUuMDUzMjExNiBMNS43MjQsMTUuOTQ3MjExNiBMNy41LDE1LjA1OTIxMTYgTDkuMjc3LDE1Ljk0NzIxMTYgTDkuNzI0LDE1LjA1MzIxMTYgTDgsMTQuMTkxMjExNiBMOCwxMC43NjcyMTE2IEwxMC43NzgsOC45MTYyMTE1OCBDMTAuOTE2LDguODIzMjExNTggMTEsOC42NjcyMTE1OCAxMSw4LjUwMDIxMTU4IEwxMSw1LjAwMDIxMTU4IEwxMCw1LjAwMDIxMTU4IEwxMCw4LjIzMjIxMTU4IEw3LjI3OCwxMC4wNDcyMTE2IEw0LDguMjA3MjExNTggTDQsNC4wMzUyMTE1OCBMNywyLjY1NzIxMTU4IEw3LDcuMDAwMjExNTggTDgsNy4wMDAyMTE1OCBMOCwyLjE5ODIxMTU4IEwxMC40OTIsMS4wNTQyMTE1OCBMMTQsMi44MDkyMTE1OCBMMTQsMTcuMTkxMjExNiBMNi4yNzcsMjEuMDUzMjExNiBMNi43MjQsMjEuOTQ3MjExNiBMMTQsMTguMzA5MjExNiBMMTQsMjUuMTkxMjExNiBMMTAuNTE2LDI2LjkzMzIxMTYgWiBNMjUuNSwxOS41MDAyMTE2IEMyNS41LDIwLjA1MTIxMTYgMjUuMDUyLDIwLjUwMDIxMTYgMjQuNSwyMC41MDAyMTE2IEMyMy45NDksMjAuNTAwMjExNiAyMy41LDIwLjA1MTIxMTYgMjMuNSwxOS41MDAyMTE2IEMyMy41LDE4Ljk0OTIxMTYgMjMuOTQ5LDE4LjUwMDIxMTYgMjQuNSwxOC41MDAyMTE2IEMyNS4wNTIsMTguNTAwMjExNiAyNS41LDE4Ljk0OTIxMTYgMjUuNSwxOS41MDAyMTE2IEwyNS41LDE5LjUwMDIxMTYgWiBNMjAuNSwyNC4wMDAyMTE2IEMyMC41LDI0LjU1MTIxMTYgMjAuMDUyLDI1LjAwMDIxMTYgMTkuNSwyNS4wMDAyMTE2IEMxOC45NDksMjUuMDAwMjExNiAxOC41LDI0LjU1MTIxMTYgMTguNSwyNC4wMDAyMTE2IEMxOC41LDIzLjQ0OTIxMTYgMTguOTQ5LDIzLjAwMDIxMTYgMTkuNSwyMy4wMDAyMTE2IEMyMC4wNTIsMjMuMDAwMjExNiAyMC41LDIzLjQ0OTIxMTYgMjAuNSwyNC4wMDAyMTE2IEwyMC41LDI0LjAwMDIxMTYgWiBNMTkuNSw0LjAwMDIxMTU4IEMxOS41LDMuNDQ5MjExNTggMTkuOTQ5LDMuMDAwMjExNTggMjAuNSwzLjAwMDIxMTU4IEMyMS4wNTIsMy4wMDAyMTE1OCAyMS41LDMuNDQ5MjExNTggMjEuNSw0LjAwMDIxMTU4IEMyMS41LDQuNTUxMjExNTggMjEuMDUyLDUuMDAwMjExNTggMjAuNSw1LjAwMDIxMTU4IEMxOS45NDksNS4wMDAyMTE1OCAxOS41LDQuNTUxMjExNTggMTkuNSw0LjAwMDIxMTU4IEwxOS41LDQuMDAwMjExNTggWiBNMjYsMTEuNTAwMjExNiBDMjYuNTUyLDExLjUwMDIxMTYgMjcsMTEuOTQ5MjExNiAyNywxMi41MDAyMTE2IEMyNywxMy4wNTEyMTE2IDI2LjU1MiwxMy41MDAyMTE2IDI2LDEzLjUwMDIxMTYgQzI1LjQ0OSwxMy41MDAyMTE2IDI1LDEzLjA1MTIxMTYgMjUsMTIuNTAwMjExNiBDMjUsMTEuOTQ5MjExNiAyNS40NDksMTEuNTAwMjExNiAyNiwxMS41MDAyMTE2IEwyNiwxMS41MDAyMTE2IFogTTI0LjA3MSwxMy4wMDAyMTE2IEMyNC4yOTUsMTMuODYwMjExNiAyNS4wNzEsMTQuNTAwMjExNiAyNiwxNC41MDAyMTE2IEMyNy4xMDMsMTQuNTAwMjExNiAyOCwxMy42MDMyMTE2IDI4LDEyLjUwMDIxMTYgQzI4LDExLjM5NzIxMTYgMjcuMTAzLDEwLjUwMDIxMTYgMjYsMTAuNTAwMjExNiBDMjUuMDcxLDEwLjUwMDIxMTYgMjQuMjk1LDExLjE0MDIxMTYgMjQuMDcxLDEyLjAwMDIxMTYgTDE1LDEyLjAwMDIxMTYgTDE1LDkuMDAwMjExNTggTDIwLjUsOS4wMDAyMTE1OCBDMjAuNzc3LDkuMDAwMjExNTggMjEsOC43NzYyMTE1OCAyMSw4LjUwMDIxMTU4IEwyMSw1LjkyOTIxMTU4IEMyMS44Niw1LjcwNTIxMTU4IDIyLjUsNC45MjkyMTE1OCAyMi41LDQuMDAwMjExNTggQzIyLjUsMi44OTcyMTE1OCAyMS42MDMsMi4wMDAyMTE1OCAyMC41LDIuMDAwMjExNTggQzE5LjM5OCwyLjAwMDIxMTU4IDE4LjUsMi44OTcyMTE1OCAxOC41LDQuMDAwMjExNTggQzE4LjUsNC45MjkyMTE1OCAxOS4xNCw1LjcwNTIxMTU4IDIwLDUuOTI5MjExNTggTDIwLDguMDAwMjExNTggTDE1LDguMDAwMjExNTggTDE1LDIuNTAwMjExNTggQzE1LDIuMzEwMjExNTggMTQuODkzLDIuMTM4MjExNTggMTQuNzI0LDIuMDUzMjExNTggTDEwLjcyNCwwLjA1MzIxMTU4NDMgQzEwLjU4OCwtMC4wMTQ3ODg0MTU3IDEwLjQzLC0wLjAxNzc4ODQxNTcgMTAuMjkxLDAuMDQ1MjExNTg0MyBMMy4yOTEsMy4yNjAyMTE1OCBDMy4xMTUsMy4zNDEyMTE1OCAzLDMuNTE5MjExNTggMywzLjcxNDIxMTU4IEwzLDguMjMyMjExNTggTDAuMjIzLDEwLjA4NDIxMTYgQzAuMDg0LDEwLjE3NzIxMTYgMCwxMC4zMzMyMTE2IDAsMTAuNTAwMjExNiBMMCwxNy41MDAyMTE2IEMwLDE3LjY2NzIxMTYgMC4wODQsMTcuODIzMjExNiAwLjIyMywxNy45MTYyMTE2IEwzLDE5Ljc2NzIxMTYgTDMsMjMuNTAwMjExNiBDMywyMy42NzkyMTE2IDMuMDk2LDIzLjg0NTIxMTYgMy4yNTIsMjMuOTM0MjExNiBMMTAuMjUyLDI3LjkzNDIxMTYgQzEwLjMyOSwyNy45NzgyMTE2IDEwLjQxNCwyOC4wMDAyMTE2IDEwLjUsMjguMDAwMjExNiBDMTAuNTc3LDI4LjAwMDIxMTYgMTAuNjU0LDI3Ljk4MjIxMTYgMTAuNzI0LDI3Ljk0NzIxMTYgTDE0LjcyNCwyNS45NDcyMTE2IEMxNC44OTMsMjUuODYyMjExNiAxNSwyNS42ODkyMTE2IDE1LDI1LjUwMDIxMTYgTDE1LDIxLjAwMDIxMTYgTDE5LDIxLjAwMDIxMTYgTDE5LDIyLjA3MTIxMTYgQzE4LjE0LDIyLjI5NTIxMTYgMTcuNSwyMy4wNzEyMTE2IDE3LjUsMjQuMDAwMjExNiBDMTcuNSwyNS4xMDMyMTE2IDE4LjM5OCwyNi4wMDAyMTE2IDE5LjUsMjYuMDAwMjExNiBDMjAuNjAzLDI2LjAwMDIxMTYgMjEuNSwyNS4xMDMyMTE2IDIxLjUsMjQuMDAwMjExNiBDMjEuNSwyMy4wNzEyMTE2IDIwLjg2LDIyLjI5NTIxMTYgMjAsMjIuMDcxMjExNiBMMjAsMjAuNTAwMjExNiBDMjAsMjAuMjI0MjExNiAxOS43NzcsMjAuMDAwMjExNiAxOS41LDIwLjAwMDIxMTYgTDE1LDIwLjAwMDIxMTYgTDE1LDE3LjAwMDIxMTYgTDIxLjI5MywxNy4wMDAyMTE2IEwyMi43ODQsMTguNDkwMjExNiBDMjIuNjA4LDE4Ljc4ODIxMTYgMjIuNSwxOS4xMzAyMTE2IDIyLjUsMTkuNTAwMjExNiBDMjIuNSwyMC42MDMyMTE2IDIzLjM5OCwyMS41MDAyMTE2IDI0LjUsMjEuNTAwMjExNiBDMjUuNjAzLDIxLjUwMDIxMTYgMjYuNSwyMC42MDMyMTE2IDI2LjUsMTkuNTAwMjExNiBDMjYuNSwxOC4zOTcyMTE2IDI1LjYwMywxNy41MDAyMTE2IDI0LjUsMTcuNTAwMjExNiBDMjQuMTMxLDE3LjUwMDIxMTYgMjMuNzg4LDE3LjYwODIxMTYgMjMuNDkxLDE3Ljc4MzIxMTYgTDIxLjg1NCwxNi4xNDYyMTE2IEMyMS43NiwxNi4wNTMyMTE2IDIxLjYzMywxNi4wMDAyMTE2IDIxLjUsMTYuMDAwMjExNiBMMTUsMTYuMDAwMjExNiBMMTUsMTMuMDAwMjExNiBMMjQuMDcxLDEzLjAwMDIxMTYgWiIgaWQ9IkZpbGwtNSI+PC9wYXRoPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      background: #1a1d27;
+      border-bottom: 1px solid #2d3148;
+      flex-shrink: 0;
+    }
+
+    header h1 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #a78bfa;
+      letter-spacing: 0.3px;
+    }
+
+    /* model + region selector */
+    #model-select, #region-select {
+      background: #252836;
+      color: #e2e8f0;
+      border: 1px solid #3d4166;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #model-select { margin-left: auto; }
+    #model-select:focus, #region-select:focus { border-color: #7c3aed; }
+
+    /* token bar */
+    #token-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      background: #13151f;
+      border-bottom: 1px solid #2d3148;
+      flex-shrink: 0;
+    }
+    #token-bar label {
+      font-size: 12px;
+      color: #6b7280;
+      white-space: nowrap;
+    }
+    #token-input {
+      flex: 1;
+      background: #252836;
+      color: #e2e8f0;
+      border: 1px solid #3d4166;
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: 13px;
+      font-family: monospace;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-user-select: text;
+      user-select: text;
+    }
+    #token-input::placeholder { color: #4b5563; }
+    #token-input:focus { border-color: #7c3aed; }
+    #mask-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: #6b7280;
+      padding: 0 4px;
+      line-height: 1;
+    }
+
+    /* ── Chat area ── */
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .msg {
+      display: flex;
+      gap: 10px;
+      max-width: 780px;
+      width: 100%;
+    }
+    .msg.user  { align-self: flex-end; flex-direction: row-reverse; }
+    .msg.assistant { align-self: flex-start; }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .msg.user .avatar      { background: #7c3aed; }
+    .msg.assistant .avatar { background: #1e3a5f; }
+
+    .bubble {
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.6;
+      word-break: break-word;
+    }
+    .msg.user .bubble {
+      background: #7c3aed;
+      color: #fff;
+      border-bottom-right-radius: 4px;
+      white-space: pre-wrap;
+    }
+    .msg.assistant .bubble {
+      background: #1e2235;
+      color: #e2e8f0;
+      border-bottom-left-radius: 4px;
+    }
+
+    /* typing indicator */
+    .typing span {
+      display: inline-block;
+      width: 7px; height: 7px;
+      background: #6b7280;
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%, 80%, 100% { transform: translateY(0); }
+      40%           { transform: translateY(-6px); }
+    }
+
+    /* ── Input bar ── */
+    #input-bar {
+      display: flex;
+      gap: 10px;
+      padding: 14px 20px;
+      background: #1a1d27;
+      border-top: 1px solid #2d3148;
+      flex-shrink: 0;
+    }
+
+    #user-input {
+      flex: 1;
+      background: #252836;
+      color: #e2e8f0;
+      border: 1px solid #3d4166;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      max-height: 140px;
+      transition: border-color 0.2s;
+      font-family: inherit;
+    }
+    #user-input::placeholder { color: #6b7280; }
+    #user-input:focus { border-color: #7c3aed; }
+
+    #send-btn {
+      background: #7c3aed;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 0 18px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+      align-self: flex-end;
+      height: 42px;
+    }
+    #send-btn:hover   { background: #6d28d9; }
+    #send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* error toast */
+    #error-toast {
+      display: none;
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #7f1d1d;
+      color: #fca5a5;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      z-index: 100;
+      max-width: 90vw;
+      text-align: center;
+    }
+
+    /* token usage pill */
+    .token-usage {
+      font-size: 11px;
+      color: #4b5563;
+      margin-top: 4px;
+      padding-left: 42px;
+    }
+    .token-usage span { color: #6b7280; }
+    .token-usage .in  { color: #818cf8; }
+    .token-usage .out { color: #34d399; }
+
+    /* streaming cursor */
+    .cursor::after {
+      content: '▋';
+      animation: blink 0.7s step-end infinite;
+      color: #7c3aed;
+    }
+    .streaming-tail::after {
+      content: '▋';
+      animation: blink 0.7s step-end infinite;
+      color: #7c3aed;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+    /* ── Markdown styles ── */
+    .bubble.assistant h1,.bubble.assistant h2,.bubble.assistant h3 {
+      font-weight: 600; margin: 12px 0 4px; line-height: 1.3;
+    }
+    .bubble.assistant h1 { font-size: 1.2em; }
+    .bubble.assistant h2 { font-size: 1.1em; }
+    .bubble.assistant h3 { font-size: 1em; }
+    .bubble.assistant p  { margin: 6px 0; }
+    .bubble.assistant ul,.bubble.assistant ol { margin: 6px 0 6px 20px; }
+    .bubble.assistant li { margin: 2px 0; }
+    .bubble.assistant code {
+      background: #0d0f1a; color: #a78bfa;
+      padding: 1px 5px; border-radius: 4px;
+      font-family: 'Fira Code', monospace; font-size: 0.88em;
+    }
+    .bubble.assistant pre {
+      background: #0d0f1a; border: 1px solid #2d3148;
+      border-radius: 8px; padding: 12px 14px; margin: 8px 0;
+      overflow-x: auto;
+    }
+    .bubble.assistant pre code {
+      background: none; padding: 0; color: #c4b5fd; font-size: 0.85em;
+    }
+    .bubble.assistant blockquote {
+      border-left: 3px solid #4c1d95; margin: 8px 0;
+      padding: 4px 12px; color: #9ca3af;
+    }
+    .bubble.assistant hr { border: none; border-top: 1px solid #2d3148; margin: 10px 0; }
+    .bubble.assistant a  { color: #818cf8; text-decoration: underline; }
+    .bubble.assistant strong { font-weight: 700; }
+    .bubble.assistant em     { font-style: italic; }
+    .bubble.assistant table  { border-collapse: collapse; margin: 8px 0; width: 100%; }
+    .bubble.assistant th,.bubble.assistant td {
+      border: 1px solid #2d3148; padding: 5px 10px; text-align: left;
+    }
+    .bubble.assistant th { background: #1a1d27; font-weight: 600; }
+
+    /* scrollbar */
+    #chat::-webkit-scrollbar { width: 6px; }
+    #chat::-webkit-scrollbar-track { background: transparent; }
+    #chat::-webkit-scrollbar-thumb { background: #3d4166; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>⚡ Bedrock ChatBot</h1>
+  <select id="region-select">
+    <option value="us-east-1">us-east-1</option>
+    <option value="us-east-2">us-east-2</option>
+    <option value="us-west-2">us-west-2</option>
+    <option value="eu-west-1">eu-west-1</option>
+    <option value="eu-central-1">eu-central-1</option>
+    <option value="ap-northeast-1">ap-northeast-1</option>
+    <option value="ap-southeast-2">ap-southeast-2</option>
+  </select>
+  <select id="model-select">
+    <optgroup label="Anthropic Claude">
+      <option value="us.anthropic.claude-opus-4-6-v1">Claude Opus 4.6 ✦</option>
+      <option value="us.anthropic.claude-sonnet-4-6">Claude Sonnet 4.6 ✦</option>
+      <option value="us.anthropic.claude-opus-4-5-20251101-v1:0">Claude Opus 4.5</option>
+      <option value="us.anthropic.claude-sonnet-4-5-20250929-v1:0" selected>Claude Sonnet 4.5</option>
+      <option value="us.anthropic.claude-haiku-4-5-20251001-v1:0">Claude Haiku 4.5</option>
+      <option value="us.anthropic.claude-3-7-sonnet-20250219-v1:0">Claude 3.7 Sonnet</option>
+      <option value="us.anthropic.claude-3-5-sonnet-20241022-v2:0">Claude 3.5 Sonnet v2</option>
+      <option value="us.anthropic.claude-3-5-haiku-20241022-v1:0">Claude 3.5 Haiku</option>
+    </optgroup>
+    <optgroup label="Amazon Nova">
+      <option value="us.amazon.nova-premier-v1:0">Nova Premier ✦</option>
+      <option value="us.amazon.nova-2-lite-v1:0">Nova 2 Lite ✦</option>
+      <option value="us.amazon.nova-pro-v1:0">Nova Pro</option>
+      <option value="us.amazon.nova-lite-v1:0">Nova Lite</option>
+      <option value="us.amazon.nova-micro-v1:0">Nova Micro</option>
+    </optgroup>
+    <optgroup label="Meta Llama">
+      <option value="us.meta.llama4-maverick-17b-instruct-v1:0">Llama 4 Maverick 17B ✦</option>
+      <option value="us.meta.llama4-scout-17b-instruct-v1:0">Llama 4 Scout 17B ✦</option>
+      <option value="us.meta.llama3-3-70b-instruct-v1:0">Llama 3.3 70B</option>
+      <option value="us.meta.llama3-2-90b-instruct-v1:0">Llama 3.2 90B</option>
+      <option value="us.meta.llama3-2-11b-instruct-v1:0">Llama 3.2 11B</option>
+      <option value="us.meta.llama3-1-405b-instruct-v1:0">Llama 3.1 405B</option>
+    </optgroup>
+    <optgroup label="DeepSeek">
+      <option value="deepseek.v3.2">DeepSeek V3.2 ✦</option>
+      <option value="deepseek.r1-v1:0">DeepSeek R1</option>
+      <option value="deepseek.v3-v1:0">DeepSeek V3.1</option>
+    </optgroup>
+    <optgroup label="Mistral AI">
+      <option value="mistral.mistral-large-3-675b-instruct">Mistral Large 3 ✦</option>
+      <option value="mistral.magistral-small-2509">Magistral Small ✦</option>
+      <option value="mistral.ministral-3-14b-instruct">Ministral 14B ✦</option>
+      <option value="mistral.ministral-3-8b-instruct">Ministral 8B ✦</option>
+      <option value="mistral.pixtral-large-2502-v1:0">Pixtral Large</option>
+      <option value="mistral.mistral-large-2402-v1:0">Mistral Large (24.02)</option>
+    </optgroup>
+    <optgroup label="Google">
+      <option value="google.gemma-3-27b-it">Gemma 3 27B ✦</option>
+      <option value="google.gemma-3-12b-it">Gemma 3 12B ✦</option>
+      <option value="google.gemma-3-4b-it">Gemma 3 4B ✦</option>
+    </optgroup>
+    <optgroup label="Qwen">
+      <option value="qwen.qwen3-235b-a22b-2507-v1:0">Qwen3 235B ✦</option>
+      <option value="qwen.qwen3-32b-v1:0">Qwen3 32B ✦</option>
+      <option value="qwen.qwen3-coder-480b-a35b-v1:0">Qwen3 Coder 480B ✦</option>
+    </optgroup>
+    <optgroup label="Moonshot AI">
+      <option value="moonshot.kimi-k2-thinking">Kimi K2 Thinking ✦</option>
+      <option value="moonshotai.kimi-k2.5">Kimi K2.5 ✦</option>
+    </optgroup>
+    <optgroup label="MiniMax">
+      <option value="minimax.minimax-m2.1">MiniMax M2.1 ✦</option>
+      <option value="minimax.minimax-m2">MiniMax M2</option>
+    </optgroup>
+    <optgroup label="Writer">
+      <option value="writer.palmyra-x5-v1:0">Palmyra X5 ✦</option>
+      <option value="writer.palmyra-x4-v1:0">Palmyra X4</option>
+    </optgroup>
+    <optgroup label="AI21 Labs">
+      <option value="ai21.jamba-1-5-large-v1:0">Jamba 1.5 Large</option>
+      <option value="ai21.jamba-1-5-mini-v1:0">Jamba 1.5 Mini</option>
+    </optgroup>
+    <optgroup label="Cohere">
+      <option value="cohere.command-r-plus-v1:0">Command R+</option>
+      <option value="cohere.command-r-v1:0">Command R</option>
+    </optgroup>
+  </select>
+</header>
+
+<div id="token-bar">
+  <label for="token-input">Bearer token</label>
+  <input id="token-input" type="text" placeholder="Paste your token here…" spellcheck="false" />
+  <button id="mask-btn" title="Toggle visibility">👁</button>
+</div>
+
+<div id="chat"></div>
+
+<div id="error-toast"></div>
+
+<div id="input-bar">
+  <textarea id="user-input" rows="1" placeholder="Message…"></textarea>
+  <button id="send-btn" title="Send">➤</button>
+</div>
+
+<script>if (top !== self) top.location = self.location;</script>
+<script>
+  // mask toggle
+  document.getElementById('mask-btn').addEventListener('click', () => {
+    const inp = document.getElementById('token-input');
+    const masked = inp.type === 'password';
+    inp.type = masked ? 'text' : 'password';
+    document.getElementById('mask-btn').textContent = masked ? '👁' : '🙈';
+  });
+
+  const chat     = document.getElementById('chat');
+  const input    = document.getElementById('user-input');
+  const sendBtn  = document.getElementById('send-btn');
+  const modelSel = document.getElementById('model-select');
+  const tokenInp = document.getElementById('token-input');
+  const errToast = document.getElementById('error-toast');
+
+  const history = [];
+  const REGION  = () => document.getElementById('region-select').value;
+
+  // ── helpers ───────────────────────────────────────────────────────────────
+
+  function showError(msg) {
+    errToast.textContent = msg;
+    errToast.style.display = 'block';
+    setTimeout(() => { errToast.style.display = 'none'; }, 6000);
+  }
+
+  function appendUserMsg(text) {
+    const wrap = document.createElement('div');
+    wrap.className = 'msg user';
+    wrap.innerHTML = `<div class="avatar">🧑</div><div class="bubble">${escHtml(text)}</div>`;
+    chat.appendChild(wrap);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  // Creates an assistant bubble ready for streaming; returns { bubble, addUsage }
+  function createAssistantBubble() {
+    const wrap = document.createElement('div');
+    wrap.className = 'msg assistant';
+
+    const av = document.createElement('div');
+    av.className = 'avatar';
+    av.textContent = '🤖';
+
+    const bub = document.createElement('div');
+    bub.className = 'bubble cursor';
+
+    wrap.appendChild(av);
+    wrap.appendChild(bub);
+    chat.appendChild(wrap);
+
+    // token usage row (hidden until we have data)
+    const usage = document.createElement('div');
+    usage.className = 'token-usage';
+    usage.style.display = 'none';
+    chat.appendChild(usage);
+
+    return {
+      bubble: bub,
+      finalize(fullText) {
+        bub.classList.remove('cursor');
+        bub.textContent = fullText;
+      },
+      showUsage(inp, out, total) {
+        usage.innerHTML =
+          `<span class="in">↑ ${inp} in</span> · <span class="out">↓ ${out} out</span> · <span>${total} total tokens</span>`;
+        usage.style.display = 'block';
+      }
+    };
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  // ── Minimal Markdown renderer ─────────────────────────────────────────────
+  function renderMd(md) {
+    let s = escHtml(md);
+
+    // fenced code blocks
+    s = s.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) =>
+      `<pre><code class="lang-${lang}">${code.trimEnd()}</code></pre>`);
+
+    // inline code
+    s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+    // headings
+    s = s.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+    s = s.replace(/^## (.+)$/gm,  '<h2>$1</h2>');
+    s = s.replace(/^# (.+)$/gm,   '<h1>$1</h1>');
+
+    // blockquote
+    s = s.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+
+    // hr
+    s = s.replace(/^---+$/gm, '<hr>');
+
+    // bold / italic
+    s = s.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+    s = s.replace(/\*\*(.+?)\*\*/g,     '<strong>$1</strong>');
+    s = s.replace(/\*(.+?)\*/g,         '<em>$1</em>');
+    s = s.replace(/__(.+?)__/g,         '<strong>$1</strong>');
+    s = s.replace(/_(.+?)_/g,           '<em>$1</em>');
+
+    // links — only allow http/https URLs
+    s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_, text, url) => {
+      const safe = /^https?:\/\//i.test(url.trim()) ? url.trim() : '#';
+      return `<a href="${safe}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    });
+
+    // tables (simple)
+    s = s.replace(/((?:^[|].+[|]\n?)+)/gm, (table) => {
+      const rows = table.trim().split('\n').filter(r => !/^\|[-| :]+\|$/.test(r.trim()));
+      const html = rows.map((r, i) => {
+        const cells = r.split('|').slice(1, -1).map(c => c.trim());
+        const tag   = i === 0 ? 'th' : 'td';
+        return '<tr>' + cells.map(c => `<${tag}>${c}</${tag}>`).join('') + '</tr>';
+      }).join('');
+      return `<table>${html}</table>`;
+    });
+
+    // unordered lists
+    s = s.replace(/((?:^[ \t]*[-*+] .+\n?)+)/gm, block => {
+      const items = block.trim().split('\n')
+        .map(l => `<li>${l.replace(/^[ \t]*[-*+] /, '')}</li>`).join('');
+      return `<ul>${items}</ul>`;
+    });
+
+    // ordered lists
+    s = s.replace(/((?:^[ \t]*\d+\. .+\n?)+)/gm, block => {
+      const items = block.trim().split('\n')
+        .map(l => `<li>${l.replace(/^[ \t]*\d+\. /, '')}</li>`).join('');
+      return `<ol>${items}</ol>`;
+    });
+
+    // paragraphs — wrap double-newline separated blocks not already tagged
+    s = s.split(/\n{2,}/).map(block => {
+      block = block.trim();
+      if (!block) return '';
+      if (/^<(h[1-6]|ul|ol|pre|blockquote|hr|table)/.test(block)) return block;
+      return `<p>${block.replace(/\n/g, '<br>')}</p>`;
+    }).join('\n');
+
+    return s;
+  }
+
+  // Auto-resize textarea
+  input.addEventListener('input', () => {
+    input.style.height = 'auto';
+    input.style.height = Math.min(input.scrollHeight, 140) + 'px';
+  });
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  });
+
+  sendBtn.addEventListener('click', sendMessage);
+
+  // ── send ──────────────────────────────────────────────────────────────────
+
+  async function sendMessage() {
+    const text  = input.value.trim();
+    const token = tokenInp.value.trim();
+    const model = modelSel.value;
+
+    if (!text) return;
+    if (!token) { showError('Paste your Bearer token first.'); return; }
+
+    appendUserMsg(text);
+    history.push({ role: 'user', content: [{ text }] });
+
+    input.value = '';
+    input.style.height = 'auto';
+    sendBtn.disabled = true;
+
+    const { bubble, finalize, showUsage } = createAssistantBubble();
+    chat.scrollTop = chat.scrollHeight;
+
+    try {
+      const { fullText, usage } = await streamBedrock(model, token, history, (chunk) => {
+        // Render complete lines as markdown, keep the incomplete last line as plain text
+        const lastNewline = chunk.lastIndexOf('\n');
+        if (lastNewline === -1) {
+          // no complete line yet — plain text + cursor
+          bubble.innerHTML = escHtml(chunk);
+        } else {
+          const complete   = chunk.slice(0, lastNewline);
+          const incomplete = chunk.slice(lastNewline + 1);
+          bubble.innerHTML = renderMd(complete) +
+            (incomplete ? `<span class="streaming-tail">${escHtml(incomplete)}</span>` : '');
+        }
+        chat.scrollTop = chat.scrollHeight;
+      });
+
+      const reply = fullText.trim() || '(empty response)';
+      bubble.classList.remove('cursor');
+      bubble.innerHTML = renderMd(reply);
+      history.push({ role: 'assistant', content: [{ text: reply }] });
+
+      if (usage) {
+        showUsage(usage.inputTokens ?? '?', usage.outputTokens ?? '?',
+                  (usage.inputTokens ?? 0) + (usage.outputTokens ?? 0));
+      }
+    } catch (err) {
+      bubble.classList.remove('cursor');
+      bubble.style.color = '#f87171';
+      bubble.textContent = err.message || 'Request failed.';
+      showError(err.message || 'Request failed.');
+    } finally {
+      sendBtn.disabled = false;
+      input.focus();
+    }
+  }
+
+  // ── Bedrock converseStream ────────────────────────────────────────────────
+  // Parses AWS event-stream frames incrementally as bytes arrive.
+  // Each frame: [total_len:4][headers_len:4][prelude_crc:4][headers][payload][crc:4]
+
+  async function streamBedrock(modelId, bearerToken, messages, onChunk) {
+    const endpoint =
+      `https://bedrock-runtime.${REGION()}.amazonaws.com/model/${encodeURIComponent(modelId)}/converse-stream`;
+
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${bearerToken}`
+      },
+      body: JSON.stringify({
+        messages,
+        inferenceConfig: { maxTokens: 4096, temperature: 0.7 }
+      })
+    });
+
+    if (!res.ok) {
+      const errText = await res.text().catch(() => res.statusText);
+      throw new Error(`Bedrock ${res.status}: ${errText}`);
+    }
+
+    const reader  = res.body.getReader();
+    const dec     = new TextDecoder();
+    let buf       = new Uint8Array(0);
+    let fullText  = '';
+    let usage     = null;
+
+    function concat(a, b) {
+      const out = new Uint8Array(a.length + b.length);
+      out.set(a); out.set(b, a.length);
+      return out;
+    }
+
+    function u32(arr, off) {
+      return ((arr[off] << 24) | (arr[off+1] << 16) | (arr[off+2] << 8) | arr[off+3]) >>> 0;
+    }
+
+    // Extract JSON objects from a string by brace-matching
+    function extractJSON(str) {
+      const results = [];
+      let i = 0;
+      while (i < str.length) {
+        const start = str.indexOf('{', i);
+        if (start === -1) break;
+        let depth = 0, j = start;
+        while (j < str.length) {
+          if (str[j] === '{') depth++;
+          else if (str[j] === '}') { if (--depth === 0) break; }
+          j++;
+        }
+        try { results.push(JSON.parse(str.slice(start, j + 1))); } catch {}
+        i = j + 1;
+      }
+      return results;
+    }
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf = concat(buf, value);
+
+      // Drain all complete frames from buf
+      while (buf.length >= 12) {
+        const totalLen   = u32(buf, 0);
+        const headersLen = u32(buf, 4);
+
+        if (totalLen < 16 || totalLen > 1_000_000) { buf = new Uint8Array(0); break; }
+        if (buf.length < totalLen) break; // frame not fully received yet
+
+        const payloadStart = 12 + headersLen;
+        const payloadEnd   = totalLen - 4;
+        const frameStr     = dec.decode(buf.slice(payloadStart, payloadEnd));
+        buf                = buf.slice(totalLen); // advance past this frame
+
+        for (const evt of extractJSON(frameStr)) {
+          if (evt.delta?.text) {
+            fullText += evt.delta.text;
+            onChunk(fullText);           // ← renders each chunk immediately
+          }
+          if (evt.usage?.inputTokens !== undefined) {
+            usage = evt.usage;
+          }
+        }
+      }
+    }
+
+    return { fullText, usage };
+  }
+</script>
+</body>
+</html>
